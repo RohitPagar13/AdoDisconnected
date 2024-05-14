@@ -7,7 +7,7 @@
             ContactLayer cl = new ContactLayer();
             while (true)
             {
-                Console.WriteLine("\nWhat you want to do? \n1: Want to Add contact to the AdressBook \n2: Want to Update contact to the AdressBook \n3: Want to Search person by their First Name \n4: Want to Delete contact to the AdressBook \n5: count of all persons \n6: Display all persons");
+                Console.WriteLine("\n\nWhat you want to do? \n1: Want to Add contact to the AdressBook \n2: Want to Update contact to the AdressBook \n3: Want to Search person by their First Name \n4: Want to Delete contact to the AdressBook \n5: count of all persons \n6: Display all persons\n");
                 int choice = Convert.ToInt32(Console.ReadLine());
                 if (choice == 0)
                 {
@@ -49,6 +49,11 @@
 
                         Contact c = new Contact(firstName, lastName, address, city, state, zip, phone, email, bookName);
                         cl.Insert(c);
+                        break;
+
+                    case 3:
+                        Console.WriteLine("Enter name to search");
+                        cl.DisplayByName(Console.ReadLine());
                         break;
 
                     default:

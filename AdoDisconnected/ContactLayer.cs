@@ -59,5 +59,42 @@ namespace AdoDisconnected
                 Console.WriteLine(ex.Message);
             }
         }
+
+        public void DisplayByName(string FName)
+        {
+            try
+            {
+                dataAdapter = new SqlDataAdapter("select * from Contact", _connectionstring);
+                DataSet ds = new DataSet();
+
+                dataAdapter.Fill(ds, "Contact");
+                DataTable dt = ds.Tables["Contact"];
+                bool flag = false;
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (row["firstName"].ToString() == FName)
+                    {
+                        foreach (DataColumn col in dt.Columns)
+                        {
+                            Console.Write(col.ToString()+": "+row[col].ToString() + ", ");
+                        }
+                        flag = true;
+                        Console.WriteLine();
+                    }
+                }
+                if (!flag)
+                {
+                    Console.WriteLine("Data not found");
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
     }
 }
