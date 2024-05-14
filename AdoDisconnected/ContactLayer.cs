@@ -59,7 +59,5 @@ namespace AdoDisconnected
                 Console.WriteLine(ex.Message);
             }
         }
-
-        
     }
 }
