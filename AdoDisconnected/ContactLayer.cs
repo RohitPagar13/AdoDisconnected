@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace AdoDisconnected
@@ -70,22 +71,165 @@ namespace AdoDisconnected
                 dataAdapter.Fill(ds, "Contact");
                 DataTable dt = ds.Tables["Contact"];
                 bool flag = false;
-                foreach (DataRow row in dt.Rows)
-                {
-                    if (row["firstName"].ToString() == FName)
-                    {
-                        foreach (DataColumn col in dt.Columns)
-                        {
-                            Console.Write(col.ToString()+": "+row[col].ToString() + ", ");
-                        }
-                        flag = true;
-                        Console.WriteLine();
-                    }
-                }
-                if (!flag)
+                if (dt.Rows.Count == 0)
                 {
                     Console.WriteLine("Data not found");
                 }
+                else
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        if (row["firstName"].ToString() == FName)
+                        {
+                            foreach (DataColumn col in dt.Columns)
+                            {
+                                Console.Write(col.ToString() + ": " + row[col].ToString() + ", ");
+                            }
+                            flag = true;
+                            Console.WriteLine();
+                        }
+                    }
+                    if (!flag)
+                    {
+                        Console.WriteLine("Data not found for "+FName);
+                    }
+                }
+                
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public void DisplayAll()
+        {
+            try
+            {
+                dataAdapter = new SqlDataAdapter("select * from Contact", _connectionstring);
+                DataSet ds = new DataSet();
+
+                dataAdapter.Fill(ds, "Contact");
+                DataTable dt = ds.Tables["Contact"];
+
+                if (dt.Rows.Count == 0)
+                {
+                    Console.WriteLine("Data not found");
+                }
+                else
+                {
+                    Console.WriteLine("\nBelow is the list of all contacts\n");
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        foreach (DataColumn col in dt.Columns)
+                        {
+                            Console.Write(col.ToString() + ": " + row[col] + ", ");
+                        }
+                        Console.WriteLine("\n");
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public void Update(string FName, Contact c)
+        {
+            try
+            {
+                dataAdapter = new SqlDataAdapter("select * from Contact", _connectionstring);
+                DataSet ds = new DataSet();
+
+                dataAdapter.Fill(ds, "Contact");
+                DataTable dt = ds.Tables["Contact"];
+                bool flag = false;
+                if (dt.Rows.Count == 0)
+                {
+                    Console.WriteLine("Data not found");
+                }
+                else
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        if (row["firstName"].ToString() == FName)
+                        {
+                            row["firstName"] = c.firstName;
+                            row["lastName"] = c.lastName;
+                            row["address"] = c.address;
+                            row["city"] = c.city;
+                            row["state"] = c.state;
+                            row["zip"] = c.zip;
+                            row["phone"] = c.phone;
+                            row["email"] = c.email;
+                            row["bookName"] = c.bookName;
+                            flag = true;
+                        }
+                    }
+                    if (!flag)
+                    {
+                        Console.WriteLine("Data not found for " + FName);
+                    }
+                    SqlCommandBuilder scd = new SqlCommandBuilder(dataAdapter);
+                    dataAdapter.Update(ds, "Contact");
+
+                    Console.WriteLine("Data Updated succesfully");
+                }
+
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public void delete(string FName)
+        {
+            try
+            {
+                dataAdapter = new SqlDataAdapter("select * from Contact", _connectionstring);
+                DataSet ds = new DataSet();
+
+                dataAdapter.Fill(ds, "Contact");
+                DataTable dt = ds.Tables["Contact"];
+                bool flag = false;
+                if (dt.Rows.Count == 0)
+                {
+                    Console.WriteLine("Data not found");
+                }
+                else
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        if (row["firstName"].ToString() == FName)
+                        {
+                            dt.Rows.Remove(row);
+                            flag = true;
+                        }
+                    }
+                    if (!flag)
+                    {
+                        Console.WriteLine("Data not found for " + FName);
+                    }
+                    SqlCommandBuilder scd = new SqlCommandBuilder(dataAdapter);
+                    dataAdapter.Update(ds, "Contact");
+
+                    Console.WriteLine("Data deleted succesfully");
+                }
+
             }
             catch (SqlException ex)
             {
